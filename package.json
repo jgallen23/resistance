@@ -1,0 +1,16 @@
+{
+  "name": "resistance",
+  "description": "a flow controller",
+  "version": "1.0.0",
+  "homepage": "https://github.com/jgallen23/resistance",
+  "authors": ["Greg Allen, @jgallen23"],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jgallen23/resistance.git"
+  },
+  "dependencies": {
+  },
+  "main": "./resistance.js",
+  "keywords": ["ender", "flow"],
+  "ender": "./src/ender.js"
+}

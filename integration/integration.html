@@ -1,0 +1,43 @@
+<!DOCTYPE HTML>
+<html lang="en-us">
+  <head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+    <title>resistance integration with ender</title>
+    <script src="ender.js"></script>
+    <script src="../src/resistance.js"></script>
+    <script src="../src/ender.js"></script>
+    <script type="text/javascript">
+        var testA = function(cb) {
+          setTimeout(function() {
+            console.log("Test A Complete");
+            cb();
+          }, 500);
+        };
+
+        var testB = function(cb) {
+          setTimeout(function() {
+            console.log("Test B Complete");
+            cb();
+          }, 500);
+        };
+
+        $.runSerial([
+          testA,
+          testA,
+          testA
+          ], function() {
+            console.log("Serial Complete");
+        });
+
+        $.runParallel([
+          testB,
+          testB,
+          testB
+          ], function() {
+            console.log("Parallel Complete");
+        });
+    </script>
+  </head>
+  <body>
+  </body>
+</html>
