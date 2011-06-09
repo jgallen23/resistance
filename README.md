@@ -1,6 +1,6 @@
 # Resistance
 ----
-Resistance is a tiny flow control library for javascript.
+Resistance is a tiny (463 bytes, 298 bytes gzipped) flow control library for javascript.
 
 ## Usage
 
