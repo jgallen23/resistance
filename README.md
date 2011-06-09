@@ -37,3 +37,23 @@ R.parallel([
 });
 
 ```
+
+## Ender Support
+
+``` ender build resistance ```
+
+``` js
+
+$.runSeries([]);
+$.runParallel([]);
+
+```463 bytes, 
+
+``` ender build resistance ```
+
+``` js
+
+$.runSeries([]);
+$.runParallel([]);
+
+```463 bytes, 
