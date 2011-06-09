@@ -1,10 +1,11 @@
 # Resistance
 ----
-Resistance is a flow control library for javascript
+Resistance is a tiny flow control library for javascript.
 
 ## Usage
 
-`
+``` js
+
 var testA = function(cb) {
   setTimeout(function() {
     console.log("Test A Complete");
@@ -34,4 +35,5 @@ R.parallel([
   ], function() {
     console.log("Parallel Complete");
 });
-`
+
+```
