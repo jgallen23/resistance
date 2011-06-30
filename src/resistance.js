@@ -1,6 +1,7 @@
 !function(obj) {
 
   var runSerial = function(fns, callback) {
+    if (fns.length == 0) return callback();
     var completed = 0;
     var iterate = function() {
       fns[completed](function() {
@@ -15,6 +16,7 @@
   };
   
   var runParallel = function(fns, callback) {
+    if (fns.length == 0) return callback();
     var started = 0;
     var completed = 0;
     var iterate = function() {

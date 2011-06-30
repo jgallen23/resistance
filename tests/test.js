@@ -29,3 +29,7 @@ R.parallel([
   ], function() {
     console.log("Parallel Complete");
 });
+
+
+R.serial([], function() { console.log("Empty Serial Complete"); });
+R.parallel([], function() { console.log("Empty Serial Complete"); });
