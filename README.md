@@ -6,6 +6,7 @@ Resistance is a tiny (463 bytes, 298 bytes gzipped) flow control library for jav
 
 ``` js
 
+//Test function A
 var testA = function(cb) {
   setTimeout(function() {
     console.log("Test A Complete");
@@ -13,6 +14,7 @@ var testA = function(cb) {
   }, 500);
 };
 
+//Test function B
 var testB = function(cb) {
   setTimeout(function() {
     console.log("Test B Complete");
@@ -37,6 +39,10 @@ R.parallel([
 });
 
 ```
+
+## Node.js Support
+
+``` npm install resistance ```
 
 ## Ender Support
 
