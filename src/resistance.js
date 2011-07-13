@@ -1,6 +1,6 @@
 !function(obj) {
 
-  var runSerial = function(fns, callback) {
+  var runSeries = function(fns, callback) {
     if (fns.length == 0) return callback();
     var completed = 0;
     var iterate = function() {
@@ -38,7 +38,7 @@
       obj.R = orig;
       return this;
     },
-    serial: runSerial,
+    series: runSeries,
     parallel: runParallel
   };
 }(typeof exports === 'undefined' ? this : exports);

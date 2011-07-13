@@ -1,7 +1,7 @@
 !function($) {
   var r = R.noConflict();
   $.ender({
-    runSerial: r.serial,
+    runSeries: r.series,
     runParallel: r.parallel
   });
 }(ender);

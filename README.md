@@ -22,12 +22,12 @@ var testB = function(cb) {
   }, 500);
 };
 
-R.serial([
+R.series([
   testA,
   testA,
   testA
   ], function() {
-    console.log("Serial Complete");
+    console.log("Series Complete");
 });
 
 R.parallel([
