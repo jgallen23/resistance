@@ -1,7 +1,7 @@
 {
   "name": "resistance",
   "description": "a flow controller",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "homepage": "https://github.com/jgallen23/resistance",
   "authors": ["Greg Allen, @jgallen23"],
   "repository": {
