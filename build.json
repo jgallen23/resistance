@@ -9,7 +9,7 @@
   "JSHINT_OPTS": {
     "boss": true,
     "forin": false,
-    "curly": true,
+    "curly": false,
     "debug": false,
     "devel": false,
     "evil": false,
@@ -19,7 +19,7 @@
     "white": false,
     "indent": 2,
     "whitespace": true,
-    "asi": true
+    "asi": false
   }
 }
 
