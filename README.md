@@ -24,6 +24,17 @@ R.parallel([
 
 ```
 
+## Output
+
+Parallel 3 (100)
+Parallel 2 (250)
+Series 1 (500)
+Parallel 1 (500)
+Parallel Complete [ 1, 2, 3 ]
+Series 2 (250)
+Series 3 (100)
+Series Complete [ 1, 2, 3 ]
+
 ## Node.js Support
 
 ``` npm install resistance ```
