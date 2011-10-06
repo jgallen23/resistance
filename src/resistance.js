@@ -37,6 +37,23 @@
     iterate();
   };
 
+  var queue = function(fn, parallel) {
+    var q = [];
+    return {
+      push: function(obj) {
+        q.push(function(cb) {
+          fn(obj, cb);
+        });
+      },
+      run: function(cb) {
+        if (parallel)
+          runParallel(q, cb);
+        else
+          runSeries(q, cb);
+      }
+    };
+  };
+
   var orig = obj.R;
   obj.R = {
     noConflict: function() {
@@ -44,6 +61,7 @@
       return this;
     },
     series: runSeries,
-    parallel: runParallel
+    parallel: runParallel,
+    queue: queue
   };
 }(typeof exports === 'undefined' ? this : exports);

@@ -16,6 +16,19 @@ R.parallel([
     console.log("Parallel Complete", data);
 });
 
-
 R.series([], function() { console.log("Empty Series Complete"); });
 R.parallel([], function() { console.log("Empty Parallel Complete"); });
+
+var q = R.queue(function(duration, callback) {
+  setTimeout(function() {
+    console.log("Queue ("+duration+")");
+    callback();
+  }, duration);
+}, true);
+
+q.push(500);
+q.push(200);
+q.run(function() {
+  console.log("Queue Done");
+});
+

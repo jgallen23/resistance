@@ -1,6 +1,6 @@
 {
   "JAVASCRIPT": {
-    "DIST_DIR": "./",
+    "DIST_DIR": "./dist",
     "resistance": [
       "./src/copyright.js",
       "./src/resistance.js"

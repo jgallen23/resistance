@@ -1,6 +1,6 @@
 /*!
   * Resistance - A javascript flow controller 
-  * v1.1.0
+  * v1.2.0
   * https://github.com/jgallen23/resistance
   * copyright JGA 2011
   * MIT License
@@ -45,6 +45,23 @@
     iterate();
   };
 
+  var queue = function(fn, parallel) {
+    var q = [];
+    return {
+      push: function(obj) {
+        q.push(function(cb) {
+          fn(obj, cb);
+        });
+      },
+      run: function(cb) {
+        if (parallel)
+          runParallel(q, cb);
+        else
+          runSeries(q, cb);
+      }
+    };
+  };
+
   var orig = obj.R;
   obj.R = {
     noConflict: function() {
@@ -52,6 +69,7 @@
       return this;
     },
     series: runSeries,
-    parallel: runParallel
+    parallel: runParallel,
+    queue: queue
   };
 }(typeof exports === 'undefined' ? this : exports);
