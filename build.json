@@ -2,8 +2,10 @@
   "JAVASCRIPT": {
     "DIST_DIR": "./dist",
     "resistance": [
-      "./src/copyright.js",
-      "./src/resistance.js"
+      "./lib/copyright.js",
+      "./lib/amd-top.js",
+      "./lib/resistance.js",
+      "./lib/amd-bottom.js"
     ]
   },
   "JSHINT_OPTS": {
