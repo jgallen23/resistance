@@ -110,6 +110,28 @@ exports.testQueue = function(t) {
     t.done();
   });
 };
+
+exports.testQueueWithArray = function(t) {
+  var testsRun = 0;
+
+  var q = R.queue(function(duration, callback) {
+    setTimeout(function() {
+      if (duration == 500) //test if 200 finished before it
+        t.equal(testsRun, 1);
+      testsRun++;
+      callback(duration);
+    }, duration);
+  });
+
+  q.push([500, 200]);
+  q.run(function(data) {
+    t.equal(testsRun, 2);
+    t.equal(data[0], 500);
+    t.equal(data[1], 200);
+    t.done();
+  });
+};
+
 exports.testQueueSeries = function(t) {
   var testsRun = 0;
 

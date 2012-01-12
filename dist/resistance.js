@@ -1,6 +1,6 @@
 /*!
   * Resistance - A javascript flow controller 
-  * v1.3.0
+  * v1.3.2
   * https://github.com/jgallen23/resistance
   * copyright JGA 2011
   * MIT License
@@ -57,9 +57,16 @@ var queue = function(fn, series) {
   var q = [];
   return {
     push: function(obj) {
-      q.push(function(cb) {
-        fn(obj, cb);
-      });
+      if (obj instanceof Array) {
+        for (var i = 0, c = obj.length; i < c; i++) {
+          var item = obj[i];
+          this.push(item);
+        }
+      } else {
+        q.push(function(cb) {
+          fn(obj, cb);
+        });
+      }
     },
     run: function(cb) {
       if (!series)
