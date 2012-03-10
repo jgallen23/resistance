@@ -25,6 +25,21 @@ exports.seriesTest = function(t) {
   });
 };
 
+exports.seriesSyncTest = function(t) {
+  R.series([
+    function(callback) {
+      callback(1);
+    },
+    function(callback) {
+      callback(2);
+    }
+  ], function(data) {
+    t.equal(data[0], 1);
+    t.equal(data[1], 2);
+    t.done();
+  });
+};
+
 exports.testParallel = function(t) {
   var testsRun = 0;
   R.parallel([
