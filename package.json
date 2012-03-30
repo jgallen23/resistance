@@ -9,7 +9,8 @@
     "url": "https://github.com/jgallen23/resistance.git"
   },
   "devDependencies": {
-    "nodeunit": "*",
+    "mocha": "*",
+    "chai": "*",
     "smoosh": "*"
   },
   "main": "./dist/resistance.js",
