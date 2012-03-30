@@ -54,11 +54,13 @@ describe('series', function() {
         count++;
         next(2);
       }
-    ], function(data) {
+    ], function(val1, val2) {
       expect(count).to.equal(2);
-      expect(data.length).to.equal(2);
-      expect(data[0]).to.equal(1);
-      expect(data[1]).to.equal(2);
+      expect(this.length).to.equal(2);
+      expect(this[0]).to.equal(1);
+      expect(this[1]).to.equal(2);
+      expect(val1).to.equal(1);
+      expect(val2).to.equal(2);
       done();
     }); 
   });
@@ -70,7 +72,7 @@ describe('series', function() {
           next(1);
         }, 200);
       }], function(data) {
-        expect(data[0]).to.equal(1);
+        expect(data).to.equal(1);
         done();
     });
     R.series([
@@ -79,7 +81,7 @@ describe('series', function() {
           next(2);
         }, 100);
       }], function(data) {
-        expect(data[0]).to.equal(2);
+        expect(data).to.equal(2);
     });
     
   });
@@ -125,11 +127,10 @@ describe('parallel', function() {
         count++;
         next(2);
       }
-    ], function(data) {
+    ], function(val1, val2) {
       expect(count).to.equal(2);
-      expect(data.length).to.equal(2);
-      expect(data[0]).to.equal(1);
-      expect(data[1]).to.equal(2);
+      expect(val1).to.equal(1);
+      expect(val2).to.equal(2);
       done();
     }); 
   });
@@ -141,7 +142,7 @@ describe('parallel', function() {
           next(1);
         }, 200);
       }], function(data) {
-        expect(data[0]).to.equal(1);
+        expect(data).to.equal(1);
         done();
     });
     R.parallel([
@@ -150,7 +151,7 @@ describe('parallel', function() {
           next(2);
         }, 100);
       }], function(data) {
-        expect(data[0]).to.equal(2);
+        expect(data).to.equal(2);
     });
     
   });
@@ -194,9 +195,9 @@ describe('queue', function() {
       q.push(2);
       q.push(1);
 
-      q.run(function(data) {
-        expect(data[1]).to.equal(100);
-        expect(data[0]).to.equal(200);
+      q.run(function(val1, val2) {
+        expect(val1).to.equal(200);
+        expect(val2).to.equal(100);
         expect(testsRun).to.equal(2);
         done();
       });
@@ -215,9 +216,9 @@ describe('queue', function() {
 
         q.push(500);
         q.push(200);
-        q.run(function(data) {
-          expect(data[0]).to.equal(500);
-          expect(data[1]).to.equal(200);
+        q.run(function(val1, val2) {
+          expect(val1).to.equal(500);
+          expect(val2).to.equal(200);
         });
         
         var q2 = R.queue(function(duration, next) {
@@ -229,9 +230,9 @@ describe('queue', function() {
 
         q2.push(600);
         q2.push(100);
-        q2.run(function(data) {
-          expect(data[0]).to.equal(600);
-          expect(data[1]).to.equal(100);
+        q2.run(function(val1, val2) {
+          expect(val1).to.equal(600);
+          expect(val2).to.equal(100);
           expect(testsRun).to.equal(4);
           done();
         });
@@ -251,9 +252,9 @@ describe('queue', function() {
 
       q.push([1, 2]);
 
-      q.run(function(data) {
-        expect(data[0]).to.equal(100);
-        expect(data[1]).to.equal(200);
+      q.run(function(val1, val2) {
+        expect(val1).to.equal(100);
+        expect(val2).to.equal(200);
         done();
       });
     });
@@ -274,10 +275,10 @@ describe('queue', function() {
 
     q.push(500);
     q.push(200);
-    q.run(function(data) {
+    q.run(function(val1, val2) {
       expect(testsRun).to.equal(2);
-      expect(data[0]).to.equal(500);
-      expect(data[1]).to.equal(200);
+      expect(val1).to.equal(500);
+      expect(val2).to.equal(200);
       done();
     });
   });
@@ -332,14 +333,14 @@ describe('queue', function() {
 
       q.push(500);
       q.push(200);
-      q.run(function(data) {
+      q.run(function(val1, val2) {
         expect(testsRun).to.equal(2);
-        expect(data[0]).to.equal(500);
-        expect(data[1]).to.equal(200);
+        expect(val1).to.equal(500);
+        expect(val2).to.equal(200);
         q.clear();
         q.push(100);
-        q.run(function(data2) {
-          expect(data2[0]).to.equal(100);
+        q.run(function(val3) {
+          expect(val3).to.equal(100);
           expect(testsRun).to.equal(3);
         });
         done();

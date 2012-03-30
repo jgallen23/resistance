@@ -1,1 +1,1 @@
-module.exports = require('./dist/resistance');
+module.exports = require('./lib/resistance');

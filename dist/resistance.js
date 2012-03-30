@@ -24,7 +24,8 @@ var runSeries = function(fns, callback) {
     fns[completed](function(results) {
       data[completed] = results;
       if (++completed == fns.length) {
-        if (callback) callback(data);
+        // this is preferred for .apply but for size, we can use data
+        if (callback) callback.apply(data, data);
       } else {
         iterate();
       }
@@ -43,7 +44,7 @@ var runParallel = function(fns, callback) {
       return function(results) {
         data[i] = results;
         if (++completed == fns.length) {
-          if (callback) callback(data);
+          if (callback) callback.apply(data, data);
           return;
         }
       };
