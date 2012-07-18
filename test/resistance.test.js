@@ -1,6 +1,6 @@
 var expect = (typeof chai === 'undefined')?require('chai').expect:chai.expect;
 if (typeof window === 'undefined') { //browser
-  var R = require('../');
+  var R = require('../lib/resistance');
 }
 
 describe('series', function() {
@@ -42,28 +42,6 @@ describe('series', function() {
       done();
     }); 
   });
-  it('should pass data to the final callback', function(done) {
-    var count = 0;
-    R.series([
-      function(next) {
-        count++;
-        next(1);
-      },
-      function(next) {
-        expect(count).to.equal(1);
-        count++;
-        next(2);
-      }
-    ], function(val1, val2) {
-      expect(count).to.equal(2);
-      expect(this.length).to.equal(2);
-      expect(this[0]).to.equal(1);
-      expect(this[1]).to.equal(2);
-      expect(val1).to.equal(1);
-      expect(val2).to.equal(2);
-      done();
-    }); 
-  });
 
   it('should allow multiple series to be run at once', function(done) {
     R.series([
@@ -92,6 +70,63 @@ describe('series', function() {
       ran = true;
     });
     expect(ran).to.be.true;
+  });
+
+
+  it('series should pass data to next function', function(done) {
+    var count = 0;
+    R.series([
+      function(next) {
+        count++;
+        next(null, 1);
+      },
+      function(next, val) {
+        expect(count).to.equal(1);
+        expect(val).to.equal(1)
+        count++;
+        next(null, 2, 3);
+      },
+      function(next, val1, val2) {
+        expect(count).to.equal(2);
+        expect(val1).to.equal(2);
+        expect(val2).to.equal(3);
+        count++;
+        next(null, 4);
+      }
+    ], function(err, val) {
+      expect(count).to.equal(3);
+      expect(val).to.equal(4);
+
+      expect(this).to.be.instanceOf(Array);
+      expect(this[0][1]).to.equal(1);
+      expect(this[1][1]).to.equal(2);
+      expect(this[1][2]).to.equal(3);
+      expect(this[2][1]).to.equal(4);
+      done();
+    }); 
+  });
+
+  it('series should stop if error', function(done) {
+    var count = 0;
+    R.series([
+      function(next) {
+        count++;
+        next(null);
+      },
+      function(next) {
+        count++;
+        next(new Error('some error'));
+      },
+      function(next, val1, val2) {
+        count++;
+        next(null);
+      }
+    ], function(err, val) {
+      expect(count).to.equal(2);
+      expect(err).to.exist;
+      expect(err.message).to.equal('some error');
+      done();
+    }); 
   });
 });
 
@@ -269,16 +304,17 @@ describe('queue', function() {
         if (duration == 500) //make sure running in series
           expect(testsRun).to.equal(0);
         testsRun++;
-        next(duration);
+        next(null, duration);
       }, duration);
     }, true);
 
     q.push(500);
     q.push(200);
-    q.run(function(val1, val2) {
+    q.run(function(err, val) {
+      expect(err).to.not.exist;
       expect(testsRun).to.equal(2);
-      expect(val1).to.equal(500);
-      expect(val2).to.equal(200);
+      expect(this[0][1]).to.equal(500);
+      expect(val).to.equal(200);
       done();
     });
   });
@@ -333,9 +369,9 @@ describe('queue', function() {
 
       q.push(500);
       q.push(200);
-      q.run(function(val1, val2) {
+      q.run(function(err, val2) {
         expect(testsRun).to.equal(2);
-        expect(val1).to.equal(500);
+        expect(this[0][1]).to.equal(500);
         expect(val2).to.equal(200);
         q.clear();
         q.push(100);
