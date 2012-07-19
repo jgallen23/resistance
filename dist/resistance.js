@@ -17,19 +17,30 @@ var instant = function(fn) {
 };
 
 var runSeries = function(fns, callback) {
-  if (fns.length === 0) return callback();
-  var completed = 0;
+  var completed = -1;
   var data = [];
+  if (!callback) {
+    callback = function() {};
+  }
   var iterate = function() {
-    fns[completed](function(results) {
-      data[completed] = results;
-      if (++completed == fns.length) {
-        // this is preferred for .apply but for size, we can use data
-        if (callback) callback.apply(data, data);
-      } else {
-        iterate();
-      }
-    });
+    var args = Array.prototype.slice.call(arguments);
+
+    if (args[0]) {
+      return callback(args[0]);
+    }
+
+    if (completed != -1) {
+      args[0] = null;
+      data[completed] = args;
+    }
+
+    if (++completed == fns.length) {
+      return callback.apply(data, args);
+    } 
+
+    args[0] = iterate;
+    fns[completed].apply(this, args);
+
   };
   iterate();
 };
