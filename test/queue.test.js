@@ -1,6 +1,6 @@
 var expect = (typeof chai === 'undefined')?require('chai').expect:chai.expect;
 if (typeof window === 'undefined') { //browser
-  var R = require('../lib/resistance');
+  var R = require('../dist/resistance');
 }
 
 describe('queue', function() {
@@ -93,6 +93,20 @@ describe('queue', function() {
       q.run(function(val1, val2) {
         expect(val1).to.equal(100);
         expect(val2).to.equal(200);
+        done();
+      });
+    });
+    it('should take an array of arrays', function(done) {
+      var q = R.queue(function(val, next) {
+        next(val);
+      });
+
+      q.push([[1, 2], [3]]);
+
+      q.run(function(val1, val2) {
+        console.log(val1);
+        expect(val1.length).to.equal(2);
+        expect(val2.length).to.equal(1);
         done();
       });
     });
