@@ -25,26 +25,29 @@ suite('#queue', function() {
       });
   });
 
-  //test('be able to add new data to queue', function(done) {
+  test('be able to add new data to queue', function(done) {
 
-    //var data = [1, 2, 3];
+    var data = [1, 2, 3];
 
-    //resistance()
-      //.queue(data)
-      //.use(function(next, num) {
-        //next(null, num * 10);
-      //})
-      //.use(function(next, num) {
-        //next(null, num + 5);
-      //})
-      //.end(function(err, results) {
-        //assert.equal(err, null);
-        //assert.equal(results.length, 4);
-        //assert.deepEqual(results, [15, 25, 35, 45]);
-        //done();
-      //});
+    resistance()
+      .queue(data)
+      .use(function(next, num) {
+        next(null, num * 10);
+      })
+      .use(function(next, num) {
+        if (num == 30) {
+          this.push(4);
+        }
+        next(null, num + 5);
+      })
+      .end(function(err, results) {
+        assert.equal(err, null);
+        assert.equal(results.length, 4);
+        assert.deepEqual(results, [15, 25, 35, 45]);
+        done();
+      });
     
-  //});
+  });
 });
 
 
