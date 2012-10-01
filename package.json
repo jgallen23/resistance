@@ -13,7 +13,5 @@
     "chai": "*",
     "smoosh": "*"
   },
-  "main": "./dist/resistance.js",
-  "ender": "./lib/ender.js",
-  "keywords": ["ender", "flow"]
+  "keywords": ["flow", "async"]
 }

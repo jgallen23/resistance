@@ -3,9 +3,7 @@
     "DIST_DIR": "./dist",
     "resistance": [
       "./lib/copyright.js",
-      "./lib/amd-top.js",
-      "./lib/resistance.js",
-      "./lib/amd-bottom.js"
+      "./lib/resistance.js"
     ]
   },
   "JSHINT_OPTS": {

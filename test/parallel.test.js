@@ -1,74 +1,86 @@
-var expect = (typeof chai === 'undefined')?require('chai').expect:chai.expect;
-if (typeof window === 'undefined') { //browser
-  var R = require('../lib/resistance');
-}
+var assert = require('assert');
 
-describe('parallel', function() {
-  it('should not wait until previous finishes', function(done) {
-    var count = 0;
-    R.parallel([
-      function(next) {
-        setTimeout(function() {
-          count++;
-          next();
-        }, 200);
-      },
-      function(next) {
-        expect(count).to.equal(0);
-        count++;
-        next();
-      }
-    ], function(data) {
-      expect(count).to.equal(2);
-      done();
-    }); 
-  });
-  it('should pass data to the final callback', function(done) {
-    var count = 0;
-    R.parallel([
-      function(next) {
-        count++;
-        next(1);
-      },
-      function(next) {
-        expect(count).to.equal(1);
-        count++;
-        next(2);
-      }
-    ], function(val1, val2) {
-      expect(count).to.equal(2);
-      expect(val1).to.equal(1);
-      expect(val2).to.equal(2);
-      done();
-    }); 
-  });
+var resistance = require('../');
 
-  it('should allow multiple to be run at once', function(done) {
-    R.parallel([
-      function(next) {
+suite('#parallel', function() {
+
+  test('functions don\'t wait for previous to finish', function(done) {
+
+    var firstFinished = false;
+    var fnCount = 0;
+    resistance()
+      .parallel()
+      .use(function(next) {
         setTimeout(function() {
-          next(1);
-        }, 200);
-      }], function(data) {
-        expect(data).to.equal(1);
+          //doing work
+          firstFinished = true;
+          fnCount++;
+          next(null, 1);
+        }, 20);
+      })
+      .use(function(next) {
+        assert.equal(firstFinished, false);
+        setTimeout(function() {
+          //doing work
+          fnCount++;
+          next(null, 2);
+        }, 10);
+      })
+      .end(function(err, results) {
+
+        assert.equal(err, null);
+        assert.equal(fnCount, 2);
+        //results return in the same order they were defined, not order they finished
+        assert.deepEqual(results, [1, 2]);
         done();
-    });
-    R.parallel([
-      function(next) {
-        setTimeout(function() {
-          next(2);
-        }, 100);
-      }], function(data) {
-        expect(data).to.equal(2);
-    });
+      });
     
   });
-  
-  it('should callback instantly if nothing passed in', function() {
-    var ran = false;
-    R.parallel([], function() { 
-      ran = true;
-    });
-    expect(ran).to.be.true;
+
+  test('returning an error will stop flow', function(done) {
+
+    var count = 0;
+    resistance()
+      .parallel()
+      .use(function(done) {
+        count++;
+        done();
+      })
+      .use(function(done) {
+        count++;
+        done(new Error('you messed up'));
+      })
+      .use(function(done) {
+        count++;
+        done();
+      })
+      .end(function(err, results) {
+        assert.equal(err.message, 'you messed up');
+        assert.equal(results, null);
+        assert.equal(count, 2);
+        done();
+
+      })
+
   });
+    
+  test('context passed in to each fn', function(done) {
+
+    resistance()
+      .parallel()
+      .context(5)
+      .use(function(done, context) {
+        assert.equal(context, 5);
+        done();
+      })
+      .use(function(done, context) {
+        assert.equal(context, 5);
+        done();
+      })
+      .end(function() {
+        done();
+      });
+    
+  });
+
 });

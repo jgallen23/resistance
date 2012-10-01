@@ -1,105 +1,61 @@
 /*!
   * Resistance - A javascript flow controller 
-  * v1.3.2
+  * v2.0.0
   * https://github.com/jgallen23/resistance
   * copyright JGA 2011
   * MIT License
   */
 
-!function (name, definition) {
-  if (typeof module != 'undefined' && module.exports) module.exports = definition();
-  else if (typeof define == 'function' && typeof define.amd == 'object') define(definition);
-  else this[name] = definition();
-}('R', function() {
 
-var instant = function(fn) {
-  setTimeout(fn, 0);
-};
+var series = require('./series');
+var parallel = require('./parallel');
+var queue = require('./queue');
 
-var runSeries = function(fns, callback) {
-  var completed = -1;
-  var data = [];
-  if (!callback) {
-    callback = function() {};
+var Resistance = function() {
+  if (!(this instanceof Resistance)) {
+    return new Resistance();
   }
-  var iterate = function() {
-    var args = Array.prototype.slice.call(arguments);
 
-    if (args[0]) {
-      return callback(args[0]);
-    }
+  this.type = 'series';
+  this.flow = [];
+}
 
-    if (completed != -1) {
-      args[0] = null;
-      data[completed] = args;
-    }
+Resistance.prototype.context = function(data) {
+  this.context = data;
+  return this;
+}
 
-    if (++completed == fns.length) {
-      return callback.apply(data, args);
-    } 
+Resistance.prototype.use = function(fn) {
+  this.flow.push(fn);
+  return this;
+}
 
-    args[0] = iterate;
-    fns[completed].apply(this, args);
+Resistance.prototype.series = function() {
+  this.type = 'series';
+  return this;
+}
 
-  };
-  iterate();
-};
+Resistance.prototype.parallel = function() {
+  this.type = 'parallel';
+  return this;
+}
 
-var runParallel = function(fns, callback) {
-  if (fns.length === 0) return callback();
-  var started = 0;
-  var completed = 0;
-  var data = [];
-  var iterate = function() {
-    fns[started]((function(i) {
-      return function(results) {
-        data[i] = results;
-        if (++completed == fns.length) {
-          if (callback) callback.apply(data, data);
-          return;
-        }
-      };
-    })(started));
-    if (++started != fns.length) iterate();
-  };
-  iterate();
-};
+Resistance.prototype.queue = function(data) {
+  this.type = 'queue';
+  this.queueData = data;
+  return this;
+}
 
-var queue = function(fn, series) {
-  var q = [];
-  var push = function(item) {
-    q.push(function(cb) {
-      fn(item, cb);
-    });
+Resistance.prototype.end = function(fn) {
+
+  if (this.type == 'series') {
+    series(this.flow, fn, this.context);
+  } else if (this.type == 'parallel') {
+    parallel(this.flow, fn, this.context);
+  } else if (this.type == 'queue') {
+    queue(this.queueData, this.flow, fn);
   }
-  return {
-    push: function(obj) {
-      if (obj instanceof Array) {
-        for (var i = 0, c = obj.length; i < c; i++) {
-          var item = obj[i];
-          push(item);
-        }
-      } else {
-        push(obj);
-      }
-    },
-    run: function(cb) {
-      if (!series)
-        runParallel(q, cb);
-      else
-        runSeries(q, cb);
-    },
-    clear: function() {
-      q = [];
-    }
-  };
-};
 
-var R = {
-  series: runSeries,
-  parallel: runParallel,
-  queue: queue
-};
+}
 
-return R;
-});
+module.exports = Resistance;
